@@ -1,0 +1,25 @@
+# overlays/prod/ingress-patch.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: book-review-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /dev(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: book-ui
+            port:
+              number: 80
+      - path: /dev/api(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: book-api
+            port:
+              number: 3000

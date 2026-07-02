@@ -7,3 +7,15 @@ resources:
 # Automatically prefixes all resource names (e.g., dev-postgres) to avoid collisions
 namePrefix: dev-
 namespace: book-review-dev
+
+labels:
+  - includeSelectors: true
+    pairs:
+      environment: dev
+
+patches:
+  - path: ingress-patch.yml
+    target:
+      kind: Ingress
+      name: book-review-ingress
+      namespace: book-review-platform
