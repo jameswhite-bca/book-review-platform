@@ -24,19 +24,28 @@ For testing or manual deployment:
 
 ```bash
 # Apply all manifests
-kubectl apply -f kubernetes-manifests/
+kubectl apply -f kubernetes-manifests/base/
 
 # Or apply in order
-kubectl apply -f kubernetes-manifests/namespace.yml
-kubectl apply -f kubernetes-manifests/secrets.yml
-kubectl apply -f kubernetes-manifests/postgres-pvc.yml
-kubectl apply -f kubernetes-manifests/postgres-deployment.yml
-kubectl apply -f kubernetes-manifests/postgres-service.yml
-kubectl apply -f kubernetes-manifests/book-api-deployment.yml
-kubectl apply -f kubernetes-manifests/book-api-service.yml
-kubectl apply -f kubernetes-manifests/book-ui-deployment.yml
-kubectl apply -f kubernetes-manifests/book-ui-service.yml
-kubectl apply -f kubernetes-manifests/ingress.yml
+kubectl apply -f kubernetes-manifests/base/namespace.yml
+kubectl apply -f kubernetes-manifests/base/secrets.yml
+kubectl apply -f kubernetes-manifests/base/postgres-pvc.yml
+kubectl apply -f kubernetes-manifests/base/postgres-deployment.yml
+kubectl apply -f kubernetes-manifests/base/postgres-service.yml
+kubectl apply -f kubernetes-manifests/base/book-api-deployment.yml
+kubectl apply -f kubernetes-manifests/base/book-api-service.yml
+kubectl apply -f kubernetes-manifests/base/book-ui-deployment.yml
+kubectl apply -f kubernetes-manifests/base/book-ui-service.yml
+kubectl apply -f kubernetes-manifests/base/ingress.yml
+```
+
+### Option 3: Kustomize Multi-Environment Deployment
+
+To deploy 2 versions of the book review platform in dev and Prod
+
+```bash
+kubectl apply -k  kubernetes-manifests/overlays/dev
+kubectl apply -k  kubernetes-manifests/overlays/prod
 ```
 
 ## Testing The Book Review Platform locally using KIND
