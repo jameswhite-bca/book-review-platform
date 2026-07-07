@@ -2,23 +2,21 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: book-review-ingress
-  namespace: book-review-platform
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  name: book-review-ingress # Keep the base name here; Kustomize handles the link mapping
 spec:
   rules:
-  - http:
+  - host: prod.localhost
+    http:
       paths:
-      - path: /prod(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /
+        pathType: Prefix
         backend:
           service:
             name: book-ui
             port:
               number: 80
-      - path: /prod/api(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /api
+        pathType: Prefix
         backend:
           service:
             name: book-api

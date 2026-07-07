@@ -6,7 +6,7 @@ metadata:
   labels:
     app: book-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: book-api
@@ -27,7 +27,10 @@ spec:
         - name: PORT
           value: "3000"
         - name: DB_HOST
-          value: "postgres"
+          valueFrom:
+            configMapKeyRef:
+              name: api-config # Kustomize namePrefix handles renaming this to dev-api-config or prod-api-config automatically!
+              key: DB_HOST
         - name: DB_PORT
           value: "5432"
         - name: DB_NAME
