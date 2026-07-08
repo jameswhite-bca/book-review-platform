@@ -1,10 +1,7 @@
 // Book Review Platform JavaScript
 
 // Configuration
-// Smart Configuration for both Compose (port 8080/8081) and Ingress (port 80/443)
-const API_BASE_URL = (window.location.hostname === 'localhost' && window.location.port !== '') 
-    ? 'http://localhost:3000/api'  // Docker Compose / Local file testing
-    : '/api';                      // Kubernetes Ingress (where port is blank/standard 80)
+const API_BASE_URL = '/api';
 
 let currentUser = null;
 

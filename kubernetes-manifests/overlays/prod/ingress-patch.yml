@@ -1,0 +1,24 @@
+# overlays/prod/ingress-patch.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: book-review-ingress # Keep the base name here; Kustomize handles the link mapping
+spec:
+  rules:
+  - host: prod.localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: book-ui
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: book-api
+            port:
+              number: 3000

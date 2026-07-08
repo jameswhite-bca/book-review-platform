@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+# Automatically prefixes all resource names (e.g., dev-postgres) to avoid collisions
+namePrefix: dev-
+namespace: book-review-dev
+
+labels:
+  - includeSelectors: true
+    pairs:
+      environment: dev
+
+images:
+  - name: jameswhite83/book-ui  # <--- This must match your base deployment exactly
+    newTag: v1.3.0
+
+patches:
+  - path: ingress-patch.yml
+    target:
+      kind: Ingress
+      name: book-review-ingress
+      namespace: book-review-platform
+
+configMapGenerator:
+  - name: api-config
+    literals:
+      - DB_HOST=dev-postgres

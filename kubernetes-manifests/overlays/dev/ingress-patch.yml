@@ -1,12 +1,12 @@
+# overlays/dev/ingress-patch.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: book-review-ingress
-  namespace: book-review-platform
+  name: book-review-ingress # Keep the base name here; Kustomize handles the link mapping
 spec:
-  ingressClassName: nginx
   rules:
-  - http:
+  - host: dev.localhost
+    http:
       paths:
       - path: /
         pathType: Prefix
@@ -16,7 +16,7 @@ spec:
             port:
               number: 80
       - path: /api
-        pathType: Prefix # No annotations, no regex. Pure path passthrough.
+        pathType: Prefix
         backend:
           service:
             name: book-api
