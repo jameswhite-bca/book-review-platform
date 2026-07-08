@@ -9,7 +9,8 @@ This directory contains Kubernetes manifests for deploying the Book Review Platf
 The application is configured to be deployed via ArgoCD. Apply the ArgoCD Application manifest from the root of the repository:
 
 ```bash
-kubectl apply -f application.yml
+kubectl apply -f kubernetes-manifests/argo-dev.yml
+kubectl apply -f kubernetes-manifests/argo-prod.yml
 ```
 
 ArgoCD will:

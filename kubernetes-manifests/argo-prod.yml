@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: book-review-platform
+  name: book-review-platform-prod
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/white-james/book-review-platform.git
     targetRevision: HEAD
-    path: kubernetes-manifests
+    path: kubernetes-manifests/overlays/prod
   destination:
     server: https://kubernetes.default.svc
-    namespace: book-review-platform
+    namespace: book-review-prod
   syncPolicy:
     automated:
       selfHeal: true
