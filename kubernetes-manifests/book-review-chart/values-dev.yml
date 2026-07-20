@@ -1,0 +1,15 @@
+# Dev Environment Settings
+api:
+  replicaCount: 1
+  env:
+    nodeEnv: "development"
+  db:
+    configMapName: "dev-api-config"
+    secretName: "dev-book-review-secrets"
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "200m"

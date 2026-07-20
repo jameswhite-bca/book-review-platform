@@ -1,0 +1,29 @@
+# Global defaults fallback dictionary
+api:
+  replicaCount: 1
+  port: 3000
+  image:
+    repository: jameswhite83/book-api
+    tag: "" # Defaults to Chart.appVersion if blank
+  env:
+    nodeEnv: "production"
+  db:
+    configMapName: "api-config"
+    secretName: "book-review-secrets"
+    port: 5432
+    name: "bookreviews"
+    user: "postgres"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  probes:
+    liveness:
+      initialDelaySeconds: 30
+      periodSeconds: 10
+    readiness:
+      initialDelaySeconds: 10
+      periodSeconds: 5

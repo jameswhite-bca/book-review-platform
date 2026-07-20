@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - book-api-deployment.yml
+  - book-api-service.yml
+  - book-ui-deployment.yml
+  - book-ui-service.yml
+  - ingress.yml
+  - namespace.yml
+  - postgres-deployment.yml
+  - postgres-pvc.yml
+  - postgres-service.yml
+  - secrets.yml
