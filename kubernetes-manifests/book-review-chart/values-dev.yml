@@ -6,6 +6,7 @@ api:
   db:
     configMapName: "dev-api-config"
     secretName: "dev-book-review-secrets"
+    host: "postgres"
   resources:
     requests:
       memory: "256Mi"
@@ -30,6 +31,8 @@ ingress:
 postgres:
   persistence:
     size: "2Gi"
+  db:
+    secretName: "dev-book-review-secrets"
   resources:
     requests:
       memory: "128Mi"

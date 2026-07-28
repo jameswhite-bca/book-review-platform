@@ -6,6 +6,7 @@ api:
   db:
     configMapName: "prod-api-config"
     secretName: "prod-book-review-secrets"
+    host: "postgres"
   resources:
     requests:
       memory: "1Gi"
@@ -27,6 +28,8 @@ ui:
 postgres:
   persistence:
     size: "50Gi"
+  db:
+    secretName: "prod-book-review-secrets"
   resources:
     requests:
       memory: "1Gi"

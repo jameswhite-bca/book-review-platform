@@ -7,7 +7,7 @@ api:
     port: 3000
   image:
     repository: jameswhite83/book-api
-    tag: "" # Defaults to Chart.appVersion if blank
+    tag: "v1.0.0" # Defaults to Chart.appVersion if blank
   env:
     nodeEnv: "production"
   db:
@@ -39,7 +39,7 @@ ui:
     port: 80
   image:
     repository: jameswhite83/book-ui
-    tag: "v1.1.0"
+    tag: "v1.3.0"
   resources:
     requests:
       memory: "128Mi"
