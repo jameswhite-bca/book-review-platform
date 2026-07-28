@@ -2,11 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: book-ui
-  namespace: book-review-platform
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: book-ui
 spec:
+  type: {{ .Values.ui.service.type | default "ClusterIP" }}
   selector:
     app: book-ui
   ports:
-  - port: 80
-    targetPort: 80
-  type: ClusterIP
+  - port: {{ .Values.ui.service.port }}
+    targetPort: {{ .Values.ui.port }}
+    protocol: TCP
+    name: http

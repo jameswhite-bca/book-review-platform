@@ -2,23 +2,30 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: book-review-ingress
-  namespace: book-review-platform
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: book-review
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.ingress.className | default "nginx" }}
   rules:
+  {{- if .Values.ingress.host }}
+  - host: {{ .Values.ingress.host | quote }}
+    http:
+  {{- else }}
   - http:
+  {{- end }}
       paths:
       - path: /
-        pathType: Prefix
+        pathType: {{ .Values.ingress.paths.ui.pathType | default "Prefix" }}
         backend:
           service:
             name: book-ui
             port:
-              number: 80
+              number: {{ .Values.ui.service.port }}
       - path: /api
-        pathType: Prefix # No annotations, no regex. Pure path passthrough.
+        pathType: {{ .Values.ingress.paths.api.pathType | default "Prefix" }}
         backend:
           service:
             name: book-api
             port:
-              number: 3000
+              number: {{ .Values.api.service.port }}

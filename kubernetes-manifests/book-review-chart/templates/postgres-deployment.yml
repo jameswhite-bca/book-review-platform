@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: book-review-platform
+  namespace: {{ .Release.Namespace }}
   labels:
     app: postgres
 spec:
@@ -17,19 +17,19 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: jameswhite83/book-db:v1.0.0 # Will be updated by ArgoCD image updater or CI/CD
+        image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
         ports:
-        - containerPort: 5432
+        - containerPort: {{ .Values.postgres.port }}
           name: postgres
         env:
         - name: POSTGRES_DB
-          value: "bookreviews"
+          value: {{ .Values.postgres.db.name | quote }}
         - name: POSTGRES_USER
-          value: "postgres"
+          value: {{ .Values.postgres.db.user | quote }}
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: book-review-secrets
+              name: {{ .Values.postgres.db.secretName }}
               key: POSTGRES_PASSWORD
         - name: PGDATA
           value: "/var/lib/postgresql/data/pgdata"
@@ -37,32 +37,27 @@ spec:
         - name: postgres-storage
           mountPath: /var/lib/postgresql/data
         resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+          {{- toYaml .Values.postgres.resources | nindent 10 }}
         readinessProbe:
           exec:
             command:
             - pg_isready
             - -U
-            - postgres
+            - {{ .Values.postgres.db.user }}
             - -d
-            - bookreviews
-          initialDelaySeconds: 10
-          periodSeconds: 10
+            - {{ .Values.postgres.db.name }}
+          initialDelaySeconds: {{ .Values.postgres.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.postgres.probes.readiness.periodSeconds }}
         livenessProbe:
           exec:
             command:
             - pg_isready
             - -U
-            - postgres
+            - {{ .Values.postgres.db.user }}
             - -d
-            - bookreviews
-          initialDelaySeconds: 30
-          periodSeconds: 30
+            - {{ .Values.postgres.db.name }}
+          initialDelaySeconds: {{ .Values.postgres.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.postgres.probes.liveness.periodSeconds }}
       volumes:
       - name: postgres-storage
         persistentVolumeClaim:

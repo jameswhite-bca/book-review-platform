@@ -2,11 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: book-ui
-  namespace: book-review-platform
+  namespace: {{ .Release.Namespace }}
   labels:
     app: book-ui
 spec:
-  replicas: 1
+  replicas: {{ .Values.ui.replicaCount }}
   selector:
     matchLabels:
       app: book-ui
@@ -17,26 +17,21 @@ spec:
     spec:
       containers:
       - name: book-ui
-        image: jameswhite83/book-ui:v1.1.0  # Will be updated by ArgoCD image updater or CI/CD
+        image: "{{ .Values.ui.image.repository }}:{{ .Values.ui.image.tag | default .Chart.AppVersion }}"
         ports:
-        - containerPort: 80
+        - containerPort: {{ .Values.ui.port }}
           name: http
         resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
+          {{- toYaml .Values.ui.resources | nindent 10 }}
         livenessProbe:
           httpGet:
             path: /
-            port: 80
-          initialDelaySeconds: 10
-          periodSeconds: 10
+            port: {{ .Values.ui.port }}
+          initialDelaySeconds: {{ .Values.ui.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.ui.probes.liveness.periodSeconds }}
         readinessProbe:
           httpGet:
             path: /
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 5
+            port: {{ .Values.ui.port }}
+          initialDelaySeconds: {{ .Values.ui.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.ui.probes.readiness.periodSeconds }}

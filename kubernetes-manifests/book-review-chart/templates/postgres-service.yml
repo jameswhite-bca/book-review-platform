@@ -2,11 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
-  namespace: book-review-platform
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     app: postgres
   ports:
-  - port: 5432
-    targetPort: 5432
-  type: NodePort
+  - port: {{ .Values.postgres.service.port }}
+    targetPort: {{ .Values.postgres.port }}
+  type: {{ .Values.postgres.service.type | default "ClusterIP" }}
