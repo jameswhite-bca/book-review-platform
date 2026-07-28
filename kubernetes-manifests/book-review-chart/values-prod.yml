@@ -1,6 +1,6 @@
 # Production Environment Settings
 api:
-  replicaCount: 3
+  replicaCount: 2
   env:
     nodeEnv: "production"
   db:
@@ -9,14 +9,14 @@ api:
     host: "postgres"
   resources:
     requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
       memory: "1Gi"
       cpu: "500m"
-    limits:
-      memory: "2Gi"
-      cpu: "1000m"
 
 ui:
-  replicaCount: 3
+  replicaCount: 2
   resources:
     requests:
       memory: "256Mi"
