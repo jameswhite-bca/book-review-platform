@@ -49,6 +49,15 @@ kubectl apply -k  kubernetes-manifests/overlays/dev
 kubectl apply -k  kubernetes-manifests/overlays/prod
 ```
 
+### Option 4: Manual Helm Deployment
+
+To deploy the production environment directly with Helm:
+
+```bash
+kubectl create namespace book-review-prod
+helm upgrade --install book-review-prod ./book-review-chart -f ./book-review-chart/values-prod.yml -n book-review-prod
+```
+
 ## Testing The Book Review Platform locally using KIND
 
 ```bash
