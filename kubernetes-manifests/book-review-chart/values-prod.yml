@@ -1,0 +1,45 @@
+# Production Environment Settings
+api:
+  replicaCount: 2
+  env:
+    nodeEnv: "production"
+  db:
+    configMapName: "prod-api-config"
+    secretName: "prod-book-review-secrets"
+    host: "postgres"
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+ui:
+  replicaCount: 2
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "400m"
+
+postgres:
+  persistence:
+    size: "50Gi"
+  db:
+    secretName: "prod-book-review-secrets"
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+
+secrets:
+  name: "prod-book-review-secrets"
+  postgresPassword: "prod-secure-db-password-987"
+  dbPassword: "prod-secure-db-password-987"
+  jwtSecret: "prod-ultra-secure-jwt-key-998877"

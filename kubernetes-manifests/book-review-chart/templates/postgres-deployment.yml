@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: "{{ .Values.postgres.image.repository }}:{{ .Values.postgres.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.postgres.port }}
+          name: postgres
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.postgres.db.name | quote }}
+        - name: POSTGRES_USER
+          value: {{ .Values.postgres.db.user | quote }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgres.db.secretName }}
+              key: POSTGRES_PASSWORD
+        - name: PGDATA
+          value: "/var/lib/postgresql/data/pgdata"
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+        resources:
+          {{- toYaml .Values.postgres.resources | nindent 10 }}
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - {{ .Values.postgres.db.user }}
+            - -d
+            - {{ .Values.postgres.db.name }}
+          initialDelaySeconds: {{ .Values.postgres.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.postgres.probes.readiness.periodSeconds }}
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - {{ .Values.postgres.db.user }}
+            - -d
+            - {{ .Values.postgres.db.name }}
+          initialDelaySeconds: {{ .Values.postgres.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.postgres.probes.liveness.periodSeconds }}
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc

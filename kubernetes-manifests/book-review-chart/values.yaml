@@ -1,0 +1,103 @@
+# Global defaults fallback dictionary
+api:
+  replicaCount: 1
+  port: 3000
+  service:
+    type: ClusterIP
+    port: 3000
+  image:
+    repository: jameswhite83/book-api
+    tag: "v1.0.0" # Defaults to Chart.appVersion if blank
+  env:
+    nodeEnv: "production"
+  db:
+    configMapName: "api-config"
+    secretName: "book-review-secrets"
+    port: 5432
+    name: "bookreviews"
+    user: "postgres"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  probes:
+    liveness:
+      initialDelaySeconds: 30
+      periodSeconds: 10
+    readiness:
+      initialDelaySeconds: 10
+      periodSeconds: 5
+
+ui:
+  replicaCount: 1
+  port: 80
+  service:
+    type: ClusterIP
+    port: 80
+  image:
+    repository: jameswhite83/book-ui
+    tag: "v1.3.0"
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  probes:
+    liveness:
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    readiness:
+      initialDelaySeconds: 5
+      periodSeconds: 5
+
+ingress:
+  enabled: true
+  className: "nginx"
+  host: "" # Blank by default to allow pure localhost/cluster routing
+  paths:
+    ui:
+      pathType: "Prefix"
+    api:
+      pathType: "Prefix"
+
+postgres:
+  port: 5432
+  image:
+    repository: jameswhite83/book-db
+    tag: "v1.0.0"
+  db:
+    name: "bookreviews"
+    user: "postgres"
+    secretName: "book-review-secrets"
+  persistence:
+    storageClass: "standard"
+    size: "10Gi"
+    accessMode: "ReadWriteOnce"
+  service:
+    type: "ClusterIP"  # Changed default to ClusterIP for internal cluster safety!
+    port: 5432
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  probes:
+    liveness:
+      initialDelaySeconds: 30
+      periodSeconds: 30
+    readiness:
+      initialDelaySeconds: 10
+      periodSeconds: 10
+
+secrets:
+  name: "book-review-secrets"
+  postgresPassword: "password"
+  dbPassword: "password"
+  jwtSecret: "your-super-secret-jwt-key-change-this-in-production"

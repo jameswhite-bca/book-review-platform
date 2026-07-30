@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-ui
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: book-ui
+spec:
+  replicas: {{ .Values.ui.replicaCount }}
+  selector:
+    matchLabels:
+      app: book-ui
+  template:
+    metadata:
+      labels:
+        app: book-ui
+    spec:
+      containers:
+      - name: book-ui
+        image: "{{ .Values.ui.image.repository }}:{{ .Values.ui.image.tag | default .Chart.AppVersion }}"
+        ports:
+        - containerPort: {{ .Values.ui.port }}
+          name: http
+        resources:
+          {{- toYaml .Values.ui.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.ui.port }}
+          initialDelaySeconds: {{ .Values.ui.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.ui.probes.liveness.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.ui.port }}
+          initialDelaySeconds: {{ .Values.ui.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.ui.probes.readiness.periodSeconds }}
